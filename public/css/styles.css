@@ -1,0 +1,251 @@
+:root {
+    --background-color: rgba(240, 240, 240, 0.9);
+    --text-color: #333;
+    --button-bg-color: #4CAF50;
+    --button-hover-bg-color: #45a049;
+    --button-text-color: white;
+    --completed-text-color: gray;
+    --container-bg-color: rgba(240, 240, 240, 0.9);
+}
+
+[data-theme="dark"] {
+    --background-color: #333;
+    --text-color: #f0f0f0;
+    --button-bg-color: #444;
+    --button-hover-bg-color: #555;
+    --button-text-color: #f0f0f0;
+    --completed-text-color: #777;
+    --container-bg-color: rgba(50, 50, 50, 0.9);
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-size: cover;
+    background-position: center;
+    transition: background 0.5s;
+}
+
+.app-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 600px;
+    padding: 20px;
+    background-color: var(--container-bg-color);
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.5s;
+}
+
+.quote-container {
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.quote-container p {
+    margin: 0;
+}
+
+.login-container, .register-container, .todo-container {
+    width: 100%;
+}
+
+.button {
+    width: 100%;
+    height: 45px;
+    border: none;
+    border-radius: 6px;
+    font-size: 15px;
+    margin-top: 20px;
+    background-color: var(--button-bg-color);
+    color: var(--button-text-color);
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.button:hover {
+    background-color: var(--button-hover-bg-color);
+    cursor: pointer;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    transition: all 0.3s;
+    opacity: 1;
+}
+
+li.completed {
+    text-decoration: line-through;
+    color: var(--completed-text-color);
+}
+
+.task-details {
+    flex: 1;
+}
+
+.task-title {
+    font-weight: bold;
+}
+
+.task-meta {
+    font-size: 0.9em;
+    color: var(--text-color);
+}
+
+.task-meta span {
+    margin-right: 10px;
+}
+
+.slide-in {
+    animation: slideIn 0.5s forwards;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.slide-out {
+    animation: slideOut 0.5s forwards;
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+button.delete-button, button.edit-button, button.complete-button {
+    margin-left: 10px;
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+
+button.delete-button {
+    color: red;
+}
+
+button.edit-button {
+    color: green;
+}
+
+button.complete-button {
+    color: blue;
+}
+
+button.delete-button:hover, button.edit-button:hover, button.complete-button:hover {
+    opacity: 0.7;
+}
+
+input[type="text"], input[type="password"], input[type="date"], select {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-top: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 15px;
+}
+
+.password-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.password-container input[type="password"] {
+    flex: 1;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 10px;
+    cursor: pointer;
+}
+
+.task-actions {
+    display: flex;
+    align-items: center;
+}
+
+.edit-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.edit-input {
+    flex-grow: 1;
+    margin-right: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.theme-toggle {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: var(--button-bg-color);
+    color: var(--button-text-color);
+    border: none;
+    border-radius: 4px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.theme-toggle:hover {
+    background-color: var(--button-hover-bg-color);
+}
+
+.hidden {
+    display: none;
+}
+
+@media (max-width: 600px) {
+    body {
+        padding: 10px;
+    }
+    .app-wrapper {
+        width: 100%;
+        padding: 10px;
+    }
+    input[type="text"], input[type="password"], input[type="date"], select {
+        width: calc(100% - 10px);
+    }
+    .quote-container {
+        width: 100%;
+    }
+}

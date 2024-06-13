@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
@@ -7,19 +8,20 @@ const jwt = require('jsonwebtoken');
 const session = require('express-session');
 const fetch = require('node-fetch');
 const cors = require('cors');
-require('dotenv').config();
+const crypto = require('crypto');
 
 const app = express();
 const secretKey = process.env.SECRET_KEY;
 const mongoUrlLocal = process.env.MONGODB_URI;
 const sessionSecret = process.env.SESSION_SECRET;
+const unsplashAccessKey = process.env.UNSPLASH_ACCESS_KEY;
 const databaseName = "todo-db";
 
 // Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public')));  // Serve static files from the 'public' directory
 app.use(session({
     secret: sessionSecret,
     resave: false,
@@ -30,7 +32,7 @@ app.use(session({
 let db;
 
 // Connect to the database once and reuse the connection
-MongoClient.connect(mongoUrlLocal, { useNewUrlParser: true, useUnifiedTopology: true })
+MongoClient.connect(mongoUrlLocal, {})
     .then(client => {
         db = client.db(databaseName);
         console.log('Connected to the database');
@@ -42,7 +44,7 @@ MongoClient.connect(mongoUrlLocal, { useNewUrlParser: true, useUnifiedTopology: 
 
 // Routes
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));  // Serve the index.html file
 });
 
 // User registration
@@ -75,8 +77,13 @@ app.post('/login', async (req, res) => {
         if (!user || !await bcrypt.compare(password, user.password)) {
             res.status(401).send({ message: 'Invalid email or password' });
         } else {
-            const token = jwt.sign({ email: user.email }, secretKey, { expiresIn: '1h' });
-            res.send({ token });
+            const token = jwt.sign({ email: user.email }, secretKey, { expiresIn: '15m' }); // Short-lived access token
+            const refreshToken = crypto.randomBytes(64).toString('hex'); // Generate refresh token
+
+            // Store refresh token in database
+            await db.collection('refreshTokens').insertOne({ token: refreshToken, email: user.email });
+
+            res.send({ token, refreshToken });
         }
     } catch (error) {
         console.error('Error logging in:', error);
@@ -180,6 +187,18 @@ app.get('/get-quote', async (req, res) => {
     } catch (error) {
         console.error('Error fetching quote:', error);
         res.status(500).send({ error: 'Failed to fetch quote' });
+    }
+});
+
+// Endpoint to fetch a background image
+app.get('/get-background-image', async (req, res) => {
+    try {
+        const response = await fetch(`https://api.unsplash.com/photos/random?query=nature&client_id=${unsplashAccessKey}`);
+        const data = await response.json();
+        res.send({ url: data.urls.full });
+    } catch (error) {
+        console.error('Error fetching background image:', error);
+        res.status(500).send({ error: 'Failed to fetch background image' });
     }
 });
 

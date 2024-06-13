@@ -1,5 +1,17 @@
-node_modules
+# Node modules
+node_modules/
 
-.DS_Store
+# Logs
+logs
+*.log
+npm-debug.log*
 
-.idea/*
+# Environment variables
+.env
+
+# Vercel deployment
+.vercel
+
+# Generated files
+build/
+dist/
